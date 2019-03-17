@@ -4,18 +4,24 @@
 #
 Name     : R-webutils
 Version  : 0.6
-Release  : 6
+Release  : 7
 URL      : https://cran.r-project.org/src/contrib/webutils_0.6.tar.gz
 Source0  : https://cran.r-project.org/src/contrib/webutils_0.6.tar.gz
 Summary  : Utility Functions for Developing Web Applications
 Group    : Development/Tools
 License  : MIT
-Requires: R-webutils-lib
+Requires: R-webutils-lib = %{version}-%{release}
+Requires: R-assertthat
+Requires: R-cli
 Requires: R-curl
 Requires: R-jsonlite
+Requires: R-withr
+BuildRequires : R-assertthat
+BuildRequires : R-cli
 BuildRequires : R-curl
 BuildRequires : R-jsonlite
-BuildRequires : clr-R-helpers
+BuildRequires : R-withr
+BuildRequires : buildreq-R
 
 %description
 multipart/form-data, and application/x-www-form-urlencoded. Includes live demo
@@ -37,11 +43,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1530293977
+export SOURCE_DATE_EPOCH=1552838122
 
 %install
+export SOURCE_DATE_EPOCH=1552838122
 rm -rf %{buildroot}
-export SOURCE_DATE_EPOCH=1530293977
 export LANG=C
 export CFLAGS="$CFLAGS -O3 -flto -fno-semantic-interposition "
 export FCFLAGS="$CFLAGS -O3 -flto -fno-semantic-interposition "
@@ -59,9 +65,9 @@ echo "FFLAGS = $FFLAGS -march=haswell -ftree-vectorize " >> ~/.R/Makevars
 echo "CXXFLAGS = $CXXFLAGS -march=haswell -ftree-vectorize " >> ~/.R/Makevars
 R CMD INSTALL --install-tests --built-timestamp=${SOURCE_DATE_EPOCH} --build  -l %{buildroot}/usr/lib64/R/library webutils
 for i in `find %{buildroot}/usr/lib64/R/ -name "*.so"`; do mv $i $i.avx2 ; mv $i.avx2 ~/.stash/; done
-echo "CFLAGS = $CFLAGS -march=skylake-avx512 -ftree-vectorize -mprefer-vector-width=512 " > ~/.R/Makevars
-echo "FFLAGS = $FFLAGS -march=skylake-avx512 -ftree-vectorize -mprefer-vector-width=512 " >> ~/.R/Makevars
-echo "CXXFLAGS = $CXXFLAGS -march=skylake-avx512 -ftree-vectorize -mprefer-vector-width=512  " >> ~/.R/Makevars
+echo "CFLAGS = $CFLAGS -march=skylake-avx512 -ftree-vectorize " > ~/.R/Makevars
+echo "FFLAGS = $FFLAGS -march=skylake-avx512 -ftree-vectorize " >> ~/.R/Makevars
+echo "CXXFLAGS = $CXXFLAGS -march=skylake-avx512 -ftree-vectorize " >> ~/.R/Makevars
 R CMD INSTALL --preclean --install-tests --no-test-load --built-timestamp=${SOURCE_DATE_EPOCH} --build  -l %{buildroot}/usr/lib64/R/library webutils
 for i in `find %{buildroot}/usr/lib64/R/ -name "*.so"`; do mv $i $i.avx512 ; mv $i.avx512 ~/.stash/; done
 echo "CFLAGS = $CFLAGS -ftree-vectorize " > ~/.R/Makevars
@@ -76,8 +82,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export _R_CHECK_FORCE_SUGGESTS_=false
-R CMD check --no-manual --no-examples --no-codoc -l %{buildroot}/usr/lib64/R/library webutils|| : 
-cp ~/.stash/* %{buildroot}/usr/lib64/R/library/*/libs/ || :
+R CMD check --no-manual --no-examples --no-codoc  webutils || :
 
 
 %files
@@ -103,11 +108,16 @@ cp ~/.stash/* %{buildroot}/usr/lib64/R/library/*/libs/ || :
 /usr/lib64/R/library/webutils/help/webutils.rdx
 /usr/lib64/R/library/webutils/html/00Index.html
 /usr/lib64/R/library/webutils/html/R.css
-/usr/lib64/R/library/webutils/libs/symbols.rds
 /usr/lib64/R/library/webutils/testpage.html
+/usr/lib64/R/library/webutils/tests/testthat.R
+/usr/lib64/R/library/webutils/tests/testthat/description.orig
+/usr/lib64/R/library/webutils/tests/testthat/iris.orig
+/usr/lib64/R/library/webutils/tests/testthat/logo.orig
+/usr/lib64/R/library/webutils/tests/testthat/posttypes
+/usr/lib64/R/library/webutils/tests/testthat/test-echo.R
+/usr/lib64/R/library/webutils/tests/testthat/test-encoding.R
+/usr/lib64/R/library/webutils/tests/testthat/test-parse.R
 
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/R/library/webutils/libs/webutils.so
-/usr/lib64/R/library/webutils/libs/webutils.so.avx2
-/usr/lib64/R/library/webutils/libs/webutils.so.avx512
