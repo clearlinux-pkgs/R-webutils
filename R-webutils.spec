@@ -7,7 +7,7 @@
 #
 Name     : R-webutils
 Version  : 1.2.0
-Release  : 41
+Release  : 42
 URL      : https://cran.r-project.org/src/contrib/webutils_1.2.0.tar.gz
 Source0  : https://cran.r-project.org/src/contrib/webutils_1.2.0.tar.gz
 Summary  : Utility Functions for Developing Web Applications
